@@ -55,6 +55,7 @@ public class User {
     private Address address;
     private String phone;
     private String website;
+    private Company company;
 
     @Override
     public String toString() {
