@@ -2,11 +2,14 @@ package com.divashchenko;
 
 import com.divashchenko.Responses.Post;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class ApiService {
 
@@ -14,10 +17,12 @@ public class ApiService {
 
     private OkHttpClient client;
     private String url;
+    private Gson gson;
 
     private ApiService() {
         client = new OkHttpClient();
         url = "https://jsonplaceholder.typicode.com/";
+        gson = new Gson();
     }
 
     public static ApiService getInstance() {
@@ -45,12 +50,7 @@ public class ApiService {
     }
 
     public Post getPostById(int id) {
-        StringBuilder sb = new StringBuilder("posts/");
-        sb.append(id);
-
-        String json = takeJson(sb.toString());
-
-        Gson gson = new Gson();
-        return gson.fromJson(json, Post.class);
+        StringBuilder sb = new StringBuilder("posts/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), Post.class);
     }
 }
