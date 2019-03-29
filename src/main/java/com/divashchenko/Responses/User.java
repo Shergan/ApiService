@@ -67,6 +67,7 @@ public class User {
                 ", address=" + address +
                 ", phone='" + phone + '\'' +
                 ", website='" + website + '\'' +
+                ", company=" + company +
                 '}';
     }
 }
