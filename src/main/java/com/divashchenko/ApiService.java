@@ -53,4 +53,10 @@ public class ApiService {
         StringBuilder sb = new StringBuilder("posts/").append(id);
         return gson.fromJson(takeJson(sb.toString()), Post.class);
     }
+
+    public List<Post> getPosts() {
+        Type listType = new TypeToken<List<Post>>() {
+        }.getType();
+        return gson.fromJson(takeJson("posts"), listType);
+    }
 }
