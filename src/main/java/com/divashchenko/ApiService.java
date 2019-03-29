@@ -3,9 +3,7 @@ package com.divashchenko;
 import com.divashchenko.Responses.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -32,16 +30,13 @@ public class ApiService {
         return instance;
     }
 
-    public String takeJson(String additionalUrl) {
-        StringBuilder sb = new StringBuilder(url);
-        sb.append(additionalUrl);
+    private String takeJson(String additionalUrl) {
 
         Request request = new Request.Builder()
-                .url(sb.toString())
+                .url(url + additionalUrl)
                 .build();
 
-        try {
-            Response response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
             return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,8 +45,7 @@ public class ApiService {
     }
 
     public Post getPostById(int id) {
-        StringBuilder sb = new StringBuilder("posts/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), Post.class);
+        return gson.fromJson(takeJson("posts/" + id), Post.class);
     }
 
     public List<Post> getPosts() {
@@ -61,8 +55,7 @@ public class ApiService {
     }
 
     public Comment getCommentById(int id) {
-        StringBuilder sb = new StringBuilder("comments/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), Comment.class);
+        return gson.fromJson(takeJson("comments/" + id), Comment.class);
     }
 
     public List<Comment> getComments() {
@@ -72,8 +65,7 @@ public class ApiService {
     }
 
     public Album getAlbumById(int id) {
-        StringBuilder sb = new StringBuilder("albums/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), Album.class);
+        return gson.fromJson(takeJson("albums/" + id), Album.class);
     }
 
     public List<Album> getAlbums() {
@@ -83,8 +75,7 @@ public class ApiService {
     }
 
     public Photo getPhotoById(int id) {
-        StringBuilder sb = new StringBuilder("photos/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), Photo.class);
+        return gson.fromJson(takeJson("photos/" + id), Photo.class);
     }
 
     public List<Photo> getPhotos() {
@@ -94,8 +85,7 @@ public class ApiService {
     }
 
     public Todo getTodoById(int id) {
-        StringBuilder sb = new StringBuilder("todos/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), Todo.class);
+        return gson.fromJson(takeJson("todos/" + id), Todo.class);
     }
 
     public List<Todo> getTodos() {
@@ -105,13 +95,74 @@ public class ApiService {
     }
 
     public User getUserById(int id) {
-        StringBuilder sb = new StringBuilder("users/").append(id);
-        return gson.fromJson(takeJson(sb.toString()), User.class);
+        return gson.fromJson(takeJson("users/" + id), User.class);
     }
 
     public List<User> getUsers() {
         Type listType = new TypeToken<List<User>>() {
         }.getType();
         return gson.fromJson(takeJson("users"), listType);
+    }
+
+    public String postPost(Post post) {
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody requestBody = RequestBody.create(mediaType, gson.toJson(post));
+
+        Request request = new Request.Builder()
+                .url("https://jsonplaceholder.typicode.com/posts")
+                .post(requestBody)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return "Status: " + response.code();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error!";
+    }
+
+    public String putPost(Post post) {
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody requestBody = RequestBody.create(mediaType, gson.toJson(post));
+
+        Request request = new Request.Builder()
+                .url("https://jsonplaceholder.typicode.com/posts/1")
+                .put(requestBody)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return "Status: " + response.code();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error!";
+    }
+
+    public String deletePost(Post post) {
+        Request request = new Request.Builder()
+                .url("https://jsonplaceholder.typicode.com/posts/1")
+                .delete(null)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return "Status: " + response.code();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error!";
+    }
+
+    public List<Comment> getCommentsFromPost(int postId) {
+        Type listType = new TypeToken<List<Comment>>() {
+        }.getType();
+        return gson.fromJson(takeJson("comments?postId=" + postId), listType);
+    }
+
+    public List<Post> getPostsFromUser(int userId) {
+        Type listType = new TypeToken<List<Post>>() {
+        }.getType();
+        return gson.fromJson(takeJson("posts?userId=" + userId), listType);
     }
 }
