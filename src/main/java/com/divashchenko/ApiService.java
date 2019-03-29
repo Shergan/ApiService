@@ -1,6 +1,6 @@
 package com.divashchenko;
 
-import com.divashchenko.Responses.Post;
+import com.divashchenko.Responses.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.OkHttpClient;
@@ -58,5 +58,60 @@ public class ApiService {
         Type listType = new TypeToken<List<Post>>() {
         }.getType();
         return gson.fromJson(takeJson("posts"), listType);
+    }
+
+    public Comment getCommentById(int id) {
+        StringBuilder sb = new StringBuilder("comments/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), Comment.class);
+    }
+
+    public List<Comment> getComments() {
+        Type listType = new TypeToken<List<Comment>>() {
+        }.getType();
+        return gson.fromJson(takeJson("comments"), listType);
+    }
+
+    public Album getAlbumById(int id) {
+        StringBuilder sb = new StringBuilder("albums/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), Album.class);
+    }
+
+    public List<Album> getAlbums() {
+        Type listType = new TypeToken<List<Album>>() {
+        }.getType();
+        return gson.fromJson(takeJson("albums"), listType);
+    }
+
+    public Photo getPhotoById(int id) {
+        StringBuilder sb = new StringBuilder("photos/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), Photo.class);
+    }
+
+    public List<Photo> getPhotos() {
+        Type listType = new TypeToken<List<Photo>>() {
+        }.getType();
+        return gson.fromJson(takeJson("photos"), listType);
+    }
+
+    public Todo getTodoById(int id) {
+        StringBuilder sb = new StringBuilder("todos/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), Todo.class);
+    }
+
+    public List<Todo> getTodos() {
+        Type listType = new TypeToken<List<Todo>>() {
+        }.getType();
+        return gson.fromJson(takeJson("todos"), listType);
+    }
+
+    public User getUserById(int id) {
+        StringBuilder sb = new StringBuilder("users/").append(id);
+        return gson.fromJson(takeJson(sb.toString()), User.class);
+    }
+
+    public List<User> getUsers() {
+        Type listType = new TypeToken<List<User>>() {
+        }.getType();
+        return gson.fromJson(takeJson("users"), listType);
     }
 }
