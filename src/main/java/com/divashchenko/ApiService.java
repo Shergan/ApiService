@@ -13,14 +13,11 @@ public class ApiService {
 
     private static ApiService instance;
 
-    private OkHttpClient client;
-    private String url;
-    private Gson gson;
+    private OkHttpClient client = new OkHttpClient();
+    private final String URL = "https://jsonplaceholder.typicode.com/";
+    private Gson gson = new Gson();
 
     private ApiService() {
-        client = new OkHttpClient();
-        url = "https://jsonplaceholder.typicode.com/";
-        gson = new Gson();
     }
 
     public static ApiService getInstance() {
@@ -33,7 +30,7 @@ public class ApiService {
     private String takeJson(String additionalUrl) {
 
         Request request = new Request.Builder()
-                .url(url + additionalUrl)
+                .url(URL + additionalUrl)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -104,6 +101,15 @@ public class ApiService {
         return gson.fromJson(takeJson("users"), listType);
     }
 
+    private String takeResponse(Request request) {
+        try (Response response = client.newCall(request).execute()) {
+            return "Status: " + response.code();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Error!";
+    }
+
     public String postPost(Post post) {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody requestBody = RequestBody.create(mediaType, gson.toJson(post));
@@ -114,12 +120,7 @@ public class ApiService {
                 .addHeader("Content-Type", "application/json")
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            return "Status: " + response.code();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "Error!";
+        return takeResponse(request);
     }
 
     public String putPost(Post post) {
@@ -132,12 +133,7 @@ public class ApiService {
                 .addHeader("Content-Type", "application/json")
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            return "Status: " + response.code();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "Error!";
+        return takeResponse(request);
     }
 
     public String deletePost(Post post) {
@@ -146,12 +142,7 @@ public class ApiService {
                 .delete(null)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            return "Status: " + response.code();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "Error!";
+        return takeResponse(request);
     }
 
     public List<Comment> getCommentsFromPost(int postId) {
